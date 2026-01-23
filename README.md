@@ -16,6 +16,12 @@ This repository provides an alternative to Visiopharm for microglial imaging ana
 4. Select DAPI and all background-subtracted channels
 5. Export the cropped region (significantly reduces file size)
 
+![Draw region of interest](images/slide06_img1.png)
+*Draw a rectangle around the tissue region of interest*
+
+![Background subtracted channels](images/slide05_img1.png)
+*Background-subtracted channels are now available for export*
+
 ### 2. Channel Splitting
 
 Use `split_ometiff_channels.py` to split multi-channel OME-TIFF files into individual channel TIFFs:
@@ -40,6 +46,23 @@ pip install tifffile imagecodecs
    - Size: 1000-Infinity (keeps only large cells, excludes debris)
    - Check "Display results" and "Add to Manager"
 
+#### Iba1 Before and After B/C Adjustment
+
+![Iba1 before adjustment](images/slide10_img1.png)
+*Iba1 channel before brightness/contrast adjustment*
+
+![Iba1 after adjustment](images/slide11_img1.png)
+*Iba1 channel after brightness/contrast adjustment (slightly oversaturated)*
+
+#### Creating the Binary Mask
+
+| After B/C Adjust | After Dilate x2 + Close | After Analyze Particles |
+|------------------|-------------------------|-------------------------|
+| ![Step 1](images/slide14_img1.png) | ![Step 2](images/slide14_img2.png) | ![Step 3](images/slide14_img3.png) |
+
+![Mask detail](images/slide15_img1.png)
+*Zoomed view showing the mask overlaid on microglia*
+
 ### 4. Measure Marker Expression
 
 1. Open phenotypic marker images (APOE, CD68, CD206, etc.)
@@ -48,6 +71,9 @@ pip install tifffile imagecodecs
 4. Click "Measure"
 5. Save the "Mean" values (MFI per cell for each marker)
 
+![APOE with mask](images/slide17_img1.png)
+*APOE expression with Iba1 mask overlay - measuring mean fluorescence intensity per cell*
+
 ### 5. Data Export
 
 Export to CSV with:
@@ -55,9 +81,15 @@ Export to CSV with:
 - Sample metadata
 - Marker expression values (Mean Fluorescence Intensity)
 
+![Data format](images/slide18_img1.png)
+*Example of the exported data format with cell barcodes and marker expression values*
+
 ### 6. Downstream Analysis
 
 Run the CAFE pipeline on the exported single-cell expression data. See `Young_Stroke_Sham_Microglia_Flow_for_CAFE.ipynb` for an example analysis.
+
+![CAFE UMAP](images/slide21_img1.png)
+*Example UMAP visualization from CAFE pipeline analysis*
 
 ## Additional Measurements
 
@@ -80,3 +112,4 @@ Using the saved ROIs, you can also calculate:
 | `Young_Stroke_Sham_Microglia_Flow_for_CAFE.ipynb` | Example analysis notebook |
 | `Workflow for microglial imaging.docx` | Detailed text workflow |
 | `Microglial_COMET_Analysis_workflow.pptx` | Visual step-by-step guide with screenshots |
+| `images/` | Workflow step images extracted from the presentation |
