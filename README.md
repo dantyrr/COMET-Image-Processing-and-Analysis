@@ -29,7 +29,7 @@ Traditional immunofluorescence limits you to ~4 markers per tissue section due t
 **COMET (Codex by Akoya)** is one such platform that can image 40+ markers on a single tissue section, capturing the complexity of cellular phenotypes.
 
 ![Full brain section in COMET viewer](images/slide03_img1.png)
-*A mouse brain section viewed in COMET software showing the Iba1 (microglia marker) channel. Each bright spot represents a microglial cell.*
+*A mouse brain section viewed in COMET software (Horizon Viewer) showing the DAPI channel, which labels all cell nuclei.*
 
 ---
 
@@ -88,39 +88,103 @@ Each row is a single cell. Each column is the mean fluorescence intensity (MFI) 
 
 ## Detailed Steps
 
-### Step 1: Pre-processing in COMET Software
+### Step 1: Pre-processing in COMET Software (Horizon Viewer)
 
 Raw COMET images are enormous (often >100GB). Before analysis, we need to:
-1. Apply background subtraction to remove autofluorescence
-2. Export only the region of interest
+1. Open the image in COMET's Horizon Viewer software
+2. Apply background subtraction to remove autofluorescence
+3. Crop to the region of interest and downscale the bit depth
+4. Export only the channels we need
 
-#### Background Subtraction
+#### 1a. Open Your Image
+
+Open your image of interest in the COMET Horizon Viewer software. The viewer displays your brain section along with a channel list and histogram panel.
+
+![Open image in COMET viewer](images/slide03_img1.png)
+*A mouse brain section viewed in COMET Horizon Viewer showing the DAPI channel, which labels all cell nuclei.*
+
+#### 1b. Background Subtraction
 
 Background subtraction removes non-specific signal (autofluorescence) that can obscure true marker expression.
 
+**Open the Background Subtraction dialog** via `Channels > Background Subtraction`:
+
 ![Background subtraction menu](images/slide04_img1.png)
-*Access background subtraction via Channels > Background Subtraction*
+*Access background subtraction from the Channels menu*
 
-![Background subtraction dialog](images/slide04_img3.png)
-*Configure which channels to subtract. Each marker channel gets background subtracted using an appropriate control channel.*
+**Configure the subtraction settings.** The dialog allows batch or single selection of channels. Set each original marker channel to be subtracted against its appropriate background control channel (e.g., FITC, TRITC, Cy5, or Cy7 defaults). Click "Add all" to populate the channel list automatically:
 
-![Background subtracted channels](images/slide05_img1.png)
-*After processing, background-subtracted channels appear in your channel list*
+![Background subtraction dialog - empty](images/slide04_img2.png)
+*The Background Subtraction dialog before channels are added*
 
-#### Export Region of Interest
+![Background subtraction dialog - configured](images/slide04_img3.png)
+*After clicking "Add all", each marker channel is paired with its background control channel using Normalized Subtraction*
 
-Full brain sections are too large to process efficiently. Select and export only your region of interest:
+**Run the background subtraction.** Click "Run" to start processing. A progress bar will show the status:
+
+![Background subtraction running](images/slide04_img4.png)
+*Background subtraction in progress (65%)*
+
+![Background subtraction complete](images/slide04_img5.png)
+*Background subtraction complete - click "Close" to continue*
+
+#### 1c. Verify Background-Subtracted Channels
+
+After processing, the background-subtracted channels appear in the channel list on the left side of the viewer, listed below the original channels under "Subtracted channels":
+
+![Background subtracted channels in list](images/slide05_img1.png)
+*The channel panel now shows both original channels (top) and the newly created background-subtracted channels (bottom)*
+
+#### 1d. Draw a Region of Interest
+
+Full brain sections are too large to process efficiently. Use the rectangle annotation tool to draw a selection around the tissue region you want to analyze:
 
 ![Draw region of interest](images/slide06_img1.png)
-*Draw a rectangle around the tissue region you want to analyze*
+*Draw a rectangle around the tissue of interest. This will be used to crop the export.*
 
-![Export OME-TIFF](images/slide07_img1.png)
-*Export via File > Export OME-TIFF with DAPI and all background-subtracted channels*
+#### 1e. Export as OME-TIFF
 
-> **Note:** Even cropped exports can be large. The example below shows a 171GB file for a single brain section!
+Export the cropped, background-subtracted image via `File > Export OME-TIFF`:
 
-![File sizes](images/slide08_img1.png)
-*COMET files are large - plan your storage accordingly*
+![File menu export](images/slide07_img1.png)
+*Navigate to File > Export OME-TIFF*
+
+**Configure export settings.** There are several important options to set:
+
+**Compression method:** Select **Lzw** compression to reduce file size:
+
+![Compression selection](images/slide07_img2.png)
+*Choose Lzw compression*
+
+**Bit depth:** Downscale from 12-bit to **8-bit** to further reduce file size:
+
+![Bit depth selection](images/slide07_img3.png)
+*Select 8-bit depth - this significantly reduces file size with minimal impact on downstream analysis*
+
+**Crop from annotation:** Select **Rectangle** to crop the export to the region of interest you drew:
+
+![Crop selection](images/slide07_img4.png)
+*Select "Rectangle" to crop to your annotation*
+
+**Channels to export:** Select **DAPI** and all **background-subtracted channels**. In this example, 24 channels are selected. Notice the exported image size is now 37341 x 26989 pixels (10.46 x 7.56 mm), smaller than the full 44643 x 44643 pixel image:
+
+![Final export settings](images/slide07_img5.png)
+*Final export configuration: Lzw compression, 8-bit depth, cropped to rectangle, 24 channels selected*
+
+Click **Export** to begin. The export progress is shown at the bottom of the dialog:
+
+![Export in progress](images/slide07_img6.png)
+*Export in progress (3%)*
+
+#### 1f. Verify Exported File Size
+
+The cropping, channel selection, and bit-depth downscaling dramatically reduce the file size. In this example, the raw uncropped image was 171GB, but the exported cropped and downscaled OME-TIFF is only **6.59GB**:
+
+![Raw file sizes](images/slide08_img1.png)
+*The raw COMET image files - the full image is 171GB*
+
+![Exported file size](images/slide08_img2.png)
+*After cropping and downscaling to 8-bit, the exported OME-TIFF is only 6.59GB - a ~26x reduction in file size*
 
 ---
 
